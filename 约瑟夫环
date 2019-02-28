@@ -1,0 +1,61 @@
+/*	
+	约瑟夫环
+*/
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node
+{
+	int data;
+	struct node *next;
+}node;
+
+node* Create(int n)
+{
+	int i = 1;
+	node *p = nullptr;
+	node *head = (node*)malloc(sizeof(node));
+	p = head;
+	node *link = nullptr;
+
+	while (n){
+		
+		link = (node*)malloc(sizeof(node));
+		link->data = i++;
+		p->next = link;
+		p = p->next;
+		n--;
+	}
+	p->next = head->next;
+	free(head);
+
+	return link->next;
+}
+
+int main()
+{
+	int n = 41;
+	int m = 3;
+	node *p = Create(n);
+	node *tmp;
+
+	m %= n;
+
+	while (p != p->next){
+		for (int i = 1; i < m - 1; i++){
+			// 1,2时跳过
+			p = p->next;
+		}
+		
+		// 删除到3的节点
+		printf("%d->", p->next->data);
+		tmp = p->next;
+		p->next = tmp->next;
+		free(tmp);
+
+		p = p->next;
+	}
+
+	printf("%d", p->data);
+	return 0;
+}
