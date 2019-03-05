@@ -1,0 +1,59 @@
+/*
+  反向打印字符串
+*/
+#include<iostream>
+#include <vector>
+#include <algorithm>
+#include <stdlib.h>
+#include <string>
+#include <stack>
+
+using namespace std;
+
+string ReStr(char* str)
+{
+	
+	stack<string> sstr;
+	string rstr;
+	
+	for (int j = 0, i = 0; i < strlen(str); i++){
+		
+		if (' ' != str[i]){
+			rstr.push_back(str[i]);
+		}
+		else
+		{
+			sstr.push(rstr);
+			sstr.push(" ");
+			rstr = "";
+			j++;
+		}
+	}
+	rstr = "";
+	while (!sstr.empty()){
+		if (sstr.top() == " "){
+			sstr.pop();
+		}
+		rstr.append(sstr.top());
+		rstr.append(" ");
+		sstr.pop();
+	}
+	rstr.append(" ");
+	return rstr;
+}
+
+int main()
+{
+	string s;
+	
+	getline(cin, s);
+	char* str = new char[s.size()];
+	memcpy(str, s.c_str(), s.size());
+	if (str == nullptr)
+		return NULL;
+
+	
+	cout << ReStr(str) << endl;
+
+	return 0;
+}
