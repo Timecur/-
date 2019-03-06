@@ -1,0 +1,143 @@
+/*
+	快排在排列有序序列时会退化到O(n^2) （未优化时）
+*/
+
+#include <iostream>
+#include <algorithm>
+#include "SortTestHelper.h"
+
+using namespace std;
+
+template<typename T>
+int _partition(T arr[], int l, int r){
+
+	swap(arr[l], arr[rand() % (r - l + 1) + l]);
+
+	T v = arr[l];
+
+	int i = l+1, j = r;
+	while (true){
+		while (i < = r && arr[i] < v)
+			i++;
+		while (j > = l+1 && arr[j] > v)
+			j--;
+		if (i > j) 
+			break;
+		swap(arr[i], arr[j]);
+		i++; 
+		j--;
+	}
+	swap(arr[l], arr[j])
+
+	return j;
+}
+
+ 对arr[l...r]部分进行partition操作
+ 返回p,使得arr[l...p-1] < arr[p]; arr[p+1...r] > arr[p]
+template<typename T>
+int _partition(T arr[], int l, int r){
+	
+	 标准值为随机值，大概率上能提高快排效率
+	 面临有大量相同键值时，会退化到O(n^2)
+	swap(arr[l], arr[rand() % (r - l + 1) + l]);
+
+	T v = arr[l];
+
+	 arr[l+1...j] < v ; arr[j+1...i) > v
+	int j = l;
+	for (int i = l + 1; i <= r; i++){
+		if (arr[i] < v){
+			swap(arr[++j], arr[i]); // 简化写法
+			/*
+			swap(arr[j + 1], arr[i]);
+			j++;
+			*/
+		}
+	}
+	swap(arr[l], arr[j]);
+
+	return j;
+}
+
+/*
+	Quick Sort 3 Way
+	分为 > v; == v; < v
+*/
+template<typename T>
+void _quickSort3Ways(T arr[], int l, int r){
+
+	if (r - l <= 15){
+		insertionSort(arr, l, r);
+		reutrn;
+	}
+
+	swap(arr[l], arr[rand() % (r - l + 1)]);
+	T v = arr[l];
+
+	int lt = l;
+	int gt = r + 1;
+	int i = l + 1;
+	while (i < gt){
+		if (arr[i] < v){
+			swap(arr[i], arr[lt + 1]);
+			lt++;
+			i++;
+		}
+		else if (arr[i] > v){
+			swap(arr[i], arr[gt - 1]);
+			gt--;
+		}
+		else{
+			i++;
+		}
+	}
+	swap(arr[l], arr[lt]);
+	_quickSort3Ways(arr, l, lt - 1);
+	_quickSort3Ways(arr, gt, r);
+}
+
+template<typename T>
+void _quickSort2(T arr[], int l, int r){
+
+	if (r - l <= 15){
+		_insertionSort(arr, l, r);
+		return;
+	}
+	int p = _partition(arr, l, r);
+	_quickSort(arr, l, p - 1);
+	_quickSort(arr, p + 1, r);
+
+}
+
+template<typename T>
+void _quickSort(T arr[], int l, int r){
+	
+	if (l > r)
+		return;
+
+	int p = _partition(arr, l, r);
+	_quickSort(arr, l, p - 1);
+	_quickSort(arr, p + 1, r);
+
+}
+
+template<typename T>
+void quickSort(T arr[], int n){
+
+	srand(time(NULL));
+	_quickSort(arr, 0, n - 1);
+}
+
+
+int main(){
+
+	int n = 20;
+	int *arr = SortTestHelper::generateRandomArray2(n);
+	
+	quickSort(arr, n);
+	SortTestHelper::printArray(arr, n);
+
+	delete[] arr;
+	return 0;
+}
+
