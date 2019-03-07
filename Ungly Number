@@ -1,0 +1,46 @@
+/*
+  把只包含质因子2、3和5的数称作丑数（Ugly Number）。例如6、8都是丑数，但14不是，因为它包含质因子7。
+  习惯上我们把1当做是第一个丑数。求按从小到大的顺序的第N个丑数
+*/
+
+class Solution {
+public:
+    typedef long long LL;
+    int GetUglyNumber_Solution(int index) {
+        if(index == 0)
+            return 0;
+	    int factor[3] = { 2, 3, 5 };
+	    priority_queue<LL, vector<LL>, greater<LL> > pq; // 值越小 优先级越高
+	    set<LL> s;
+	    pq.push(1);
+	    int max = 1;
+	    while (s.size() < index){
+		    LL i = pq.top();
+		    pq.pop();
+            if(s.count(i) || i < 0)
+                continue;
+            s.insert(i);
+            int j = 0;
+		    while(j < 3){
+                LL k = i*factor[j];
+                if(pq.size() < index){
+                    pq.push(k);
+                    if(max < k){
+                        max = k;
+                    }
+                }
+                else{
+                    if(max > k)
+                         pq.push(k);
+                }
+                j++;
+            }
+        }
+        
+        set<LL>::iterator it;
+        for(it = s.begin(); it != s.end(); it++){
+            max = *it;
+        }
+        return max;
+   }
+};
