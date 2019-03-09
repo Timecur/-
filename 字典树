@@ -1,0 +1,110 @@
+#include <cstring>
+#include <iostream>
+#include <conio.h>
+
+using namespace std;
+
+#define MAX 26
+
+namespace trie
+{
+
+	struct TrieNode{
+
+		int count;  // 记录该字符出现次数
+		TrieNode *next[MAX];
+	};
+
+	// 初始化根节点
+	void InitTrieRoot(TrieNode* *pRoot)
+	{
+		*pRoot = nullptr;
+	}
+
+	// 创建新节点
+	TrieNode *CreatTrieNode()
+	{
+		TrieNode *node = new TrieNode();
+		node->count = 1; // 节点创建表明该字符出现一次，所以初始化为1
+		// 将该节点的孩子节点初始化为空节点
+		for (int i = 0; i < MAX; i++){
+			node->next[i] = nullptr;
+		}
+		return node;
+	}
+
+	// 插入节点
+	void InsertTrie(TrieNode* *pRoot, char *str)
+	{
+		
+	    TrieNode *pNode = *pRoot;
+		/*
+			如果根节点不存在，则创建根节点
+		    如果不为空，逐层插入字符
+		*/
+		if (!(pNode)){
+			// root不存在，调创建函数
+			pNode = *pRoot =  CreatTrieNode();
+		}
+		int i = 0;
+		// 当字符串不为'\0'，就循环遍历
+		while (str[i]){
+			int ret = str[i++] - 'a'; // 数组下标0~25代表对应英文字母
+			// 判断当前根节点的对应ret下标节点是否为空
+			if (!pNode->next[ret]){
+				pNode->next[ret] = CreatTrieNode();
+			}
+			else{
+				pNode->next[ret]->count++;
+			}
+			// 为了存下一个字符，所以位置向孩子节点调整
+			pNode = pNode->next[ret];
+		}
+	}
+
+	bool FindString(TrieNode* *pRoot, char *str)
+	{
+		TrieNode *pNode = *pRoot;
+		bool isFind = false;
+		int sameCount = 0; // 记录字典树与str相同的字符数
+		int i = 0;
+		while (str[i]){
+			int ret = str[i++] - 'a';
+			if (pNode->next[ret]){
+				sameCount++;
+			}
+			else{
+				return isFind;
+			}
+			pNode = pNode->next[ret];
+		}
+
+		if (sameCount == strlen(str)){
+			isFind = true;
+		}
+		return isFind;
+	}
+}
+int main()
+{
+	trie::TrieNode *root = trie::CreatTrieNode();
+	trie::InitTrieRoot(&root);
+
+	int n, m;
+	char* str1  = new char[5];
+	char* str2 = new char[5];
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++)
+	{
+		cin >> str1;
+		trie::InsertTrie(&root, str1);
+	}
+	scanf("%d", &m);
+	for (int i = 0; i < m; i++)
+	{
+		cin >> str2;
+		printf("%d\n", trie::FindString(&root,str2));
+	}
+
+	return 0;
+}
