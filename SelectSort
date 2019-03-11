@@ -1,0 +1,46 @@
+#include <iostream>
+#include <algorithm>
+#include "SelectionSort_Student.h"
+#include "SortTestHelper.h"
+
+using namespace std;
+
+// 为了函数能接收更多样的类型数据，将函数改为模板函数
+template<typename T>
+void selectionSort(T arr[], int n){
+	for (int i = 0; i < n; i++){
+		
+		// 找最小元素位置
+		int minIndex = i;
+		for (int j = i + 1; j < n; j++){
+			if (arr[j] < arr[minIndex])
+				minIndex = j;
+		}
+		swap(arr[i], arr[minIndex]);
+	}
+}
+
+int main()
+{
+	int n = 1000;
+	int *arr = SortTestHelper::generateRandomArray(n,0,n);
+	selectionSort(arr, n);
+	SortTestHelper::printArray(arr, n);
+/*
+	for (int i = 0; i < n; i++)
+		cout << a[i] << " ";
+	cout << endl;
+*/
+	Student d[4] = { { "A", 90 }, { "B", 95 }, { "C", 96 }, { "D", 89 } };
+	selectionSort(d, 4);
+	SortTestHelper::printArray(d, 4);
+	/*for (int i = 0; i < n; i++)
+		cout << d[i];
+	cout << endl;*/
+
+	SortTestHelper::testSort("Selection Sort", selectionSort, arr, n);
+
+	delete[] arr;
+	
+	return 0;
+}
