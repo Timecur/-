@@ -1,0 +1,115 @@
+#include <iostream>
+#include <algorithm>
+#include "SortTestHelper.h"
+
+using namespace std;
+
+// 将arr[l~mid] 和 arr[mid+1~r]两部分进行归并
+template<typename T>
+void __merge(T arr[], int l, int mid, int r){
+	
+	T *aux = new T[r-l+1];
+	for (int i = l; i <= r; i++){
+		aux[i-l] = arr[i];
+	}
+
+	int i = l, j = mid + 1;
+	for (int k = l; k <= r; k++){
+		// 判断索引是否越界
+		if (i > mid){
+			arr[k] = aux[j-l];
+			j++;
+		}
+		else if(j > r){
+			arr[k] = aux[i-l];
+			i++;
+		}
+		// 分别判断子序列的元素大小
+		else if (aux[i-l] < aux[j-l]){
+			arr[k] = aux[i-l];
+			i++;
+		}
+		else{
+			arr[k] = aux[j-l];
+			j++;
+		}
+	}
+
+	delete[] aux;
+}
+
+template<typename T>
+void insertionSort(T arr[], int l, int r){
+	
+	for (int i = l + 1; i <= r; i++){
+		T e = arr[i];
+		for (int j = i; j > 0 && e < arr[j - 1]; j--){
+			arr[j] = arr[j - 1];
+		}
+		arr[j] = e;
+	}
+
+	return;
+}
+
+// 递归实现归并排序
+template<typename T>
+void __mergeSort(T arr[], int l, int r){
+
+	// 子序列中只有一个元素时，直接返回
+	if (l >= r){
+		return;
+	}
+
+	/*
+	// 优化：序列排序到一定程度可以用插入排序来提高效率
+	if (r - l <= 15){
+		insertionSort(arr, l, r);
+		return;
+	}
+	*/
+
+	int mid = (l + r) / 2;
+	__mergeSort(arr, l, mid);
+	__mergeSort(arr, mid + 1, r);
+	__merge(arr, l, mid, r);
+
+}
+
+template<typename T>
+void mergeSort(T arr[], int n){
+
+	__mergeSort(arr, 0, n - 1);
+}
+
+
+// 自底向上的归并排序
+// 迭代算法
+template<typename T>
+void mergeSortBU(T arr[], int n){
+
+	for (int sz = 1; sz <= n; sz += sz){
+		for (int i = 0; i + sz < n; i += sz + sz){
+			// 对 arr[i...i+sz-1] 和 arr[i+sz...i+2*sz-1]进行归并
+			__merge(arr, i, i + sz - 1, min(i + sz + sz - 1, n - 1));
+
+		}
+	}
+}
+
+
+int main(){
+	int n = 20;
+	int *arr = SortTestHelper::generateRandomArray2(n);
+
+	mergeSort(arr, n);
+	SortTestHelper::printArray(arr, n);
+
+	
+	delete[] arr;
+
+	return 0;
+}
+
+
+ 可以用来计算逆序对
