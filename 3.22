@@ -1,0 +1,37 @@
+/*
+  有一只兔子，从出生后第3个月起每个月都生一只兔子，小兔子长到第三个月后每个月又生一只兔子，
+  假如兔子都不死，问每个月的兔子总数为多少？
+*/
+#include <iostream>
+
+using namespace std;
+
+int Rev(int num)
+{
+	if (num == 3){
+		return 1;
+	}
+	if (num < 3){
+		return 0;
+	}
+	int ret = 0;
+	for (int i = 1; i <= num - 2; i++){
+		ret += i;
+		ret += Rev(i);
+	}
+	return(ret);
+}
+
+int main()
+{
+	int month = 0;
+
+	while (cin >> month)
+	{
+		cout << Rev(month - 2) + month - 1 << endl;
+
+
+	}
+
+	return 0;
+}
