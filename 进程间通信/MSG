@@ -1,0 +1,89 @@
+
+// Server.cpp
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+ 
+#define RECV 200
+#define SEND 100
+ 
+typedef struct{
+    long msg_type;
+    char msg_data[50];
+}MsgBlock;
+ 
+int main ()
+{
+    key_t msg_key = ftok("tmp", '7');
+    printf("Key: %d\n", msg_key);
+    int msgid = msgget(msg_key, IPC_CREAT | 0775);
+ 
+    if(msgid < 0){ 
+        perror("Msg Error\n");
+        return 0;
+    }   
+ 
+ 
+    MsgBlock msg;
+    while(1){
+        printf("Server: ");
+        scanf("%s", msg.msg_data);
+        if(strncmp(msg.msg_data, "quit", 4) == 0)
+            break;
+        msg.msg_type = SEND; 
+        msgsnd(msgid, &msg, strlen(msg.msg_data)+1, 0); 
+ 
+        msgrcv(msgid, &msg, 50, RECV, 0); 
+        printf("Client: %s\n", msg.msg_data);
+    }   
+    return 0;
+}  
+
+// Client
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+ 
+#define RECV 100
+#define SEND 200
+ 
+typedef struct{
+    long msg_type;
+    char msg_data[50];
+}MsgBlock;
+ 
+int main ()
+{
+    key_t msg_key = ftok("tmp", '7');
+    printf("Key: %d\n", msg_key);
+    int msgid = msgget(msg_key, 0);
+    if(msgid < 0){
+        perror("Msg Error\n");
+        return 0;
+    }
+ 
+    MsgBlock msg;
+    while(1){
+        msgrcv(msgid, &msg, 50, RECV, 0);
+        printf("Server: %s\n", msg.msg_data);
+ 
+        printf("Client: ");
+        scanf("%s", msg.msg_data);
+        if(strncmp(msg.msg_data, "quit", 4) == 0)
+            break;
+ 
+        msg.msg_type = SEND; 
+        msgsnd(msgid, &msg, strlen(msg.msg_data)+1, 0);
+    }
+    return 0;
+}
