@@ -1,0 +1,31 @@
+
+#include <iostream>                                                                                                                                            
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+int main(){
+    pid_t pid = fork();
+    if(pid < 0){
+        cerr << "fork error" << endl;
+        exit(0);
+    }
+    else if(pid == 0){
+        int count = 3;
+        while(count--){
+            sleep(1);
+            cout << "The Child Pid = " << getpid() << ", PPid = " << getppid() << endl;
+        }
+        raise(3); // 向自身发送3信号
+        abort();
+    }
+    else{
+        int status;
+        kill(pid, 9); // 向子进程发送9号信号
+        wait(&status);
+        cout << "exit num is = " << status << endl;
+    }   
+ 
+    return 0;
+}  
