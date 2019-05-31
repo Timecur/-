@@ -1,0 +1,59 @@
+#include <iostream>
+#include <algorithm>
+#include "SortTestHelper.h"
+
+using namespace std;
+
+//template<typename T>
+// void BubbleSort(T arr[], int n){
+//
+//	for (int i = 0; i < n; i++){
+//		for (int j = 0; j < n-i-1; j++){
+//			if (arr[j+1] < arr[j]){
+//				swap(arr[j+1], arr[j]);
+//			}
+//		}
+//	}
+//}
+
+template <typename T>
+void BubbleSort(T arr[], int n)
+{
+	int lastExchange = 0; // 无序数列最后一次交换的位置
+	int sortBorder = n - 1;
+	
+	for (int i = 0; i < n; i++){
+
+		bool flag = true; // 标记是否有序数列
+		for (int j = 0; j < sortBorder; j++){
+			if (arr[j] > arr[j + 1]){
+				swap(arr[j], arr[j + 1]);
+
+				flag = false;
+				lastExchange = j; // 记录最后一次交换元素位置
+			}
+		}
+		sortBorder = lastExchange; // 更新需要排序的边界
+		
+		// 如果为true,说明前面已经有序 
+		if (flag){
+			break;
+		}
+	}
+
+}
+
+
+int main(){
+   int n = 10;
+   int *arr = SortTestHelper::generateRandomArray2(n);
+   int *arr2 = SortTestHelper::generateNearlyOrderedArray(n, n);
+   
+   SortTestHelper::printArray(arr2, n);
+
+   BubbleSort(arr2, n);
+   SortTestHelper::printArray(arr2, n);
+
+	 delete[] arr;		
+   return 0;
+}
