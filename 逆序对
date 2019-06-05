@@ -1,0 +1,50 @@
+class Solution {
+public:
+    int count;
+    void merge(vector<int>& data, int left, int mid, int right, int& count)
+	{
+		int* aux = new int[right - left + 1];
+		for (int i = left; i <= right; i++)
+			aux[i-left] = data[i];
+
+		int i = left, j = mid + 1;
+		for (int k = left; k <= right; k++){
+			if (i > mid){
+				data[k] = aux[j - left];
+				j++;
+			}
+			else if (j > right){
+				data[k] = aux[i - left];
+				i++;
+			}
+			else if (aux[i - left] < aux[j - left]){
+				data[k] = aux[i - left];
+				i++;
+			}
+			else{
+				data[k] = aux[j - left];
+			    count= (count+mid-i+1) % 1000000007;
+				j++;
+			}
+		}
+		delete []aux;
+	}
+
+	void mergesort(vector<int>& data, int left, int right, int& count)
+	{
+		if (left >= right)
+			return;
+
+		int mid = (right + left) / 2;
+		
+		mergesort(data, left, mid, count);
+		mergesort(data, mid + 1, right, count);
+		merge(data, left, mid, right, count);
+	}
+    
+    int InversePairs(vector<int> data) {
+        count = 0;
+		mergesort(data, 0, data.size() - 1, count);
+		return count;
+    }
+};
