@@ -1,6 +1,5 @@
-
-#ifndef _SPEECHREV_
-#define _SPEECHREV_
+#ifndef _SPEECHREC_
+#define _SPEECHREC_
 
 #include <iostream>
 #include <cstdio>
@@ -24,7 +23,7 @@ class SpeechDiv{
 //图灵机器人交互式类
 class InterRobot{
 };
-//Jarvis 完成核心逻辑
+//SpeechRec 完成核心逻辑
 class SpeechRec{
 };
 #endif
