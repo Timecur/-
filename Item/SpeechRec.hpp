@@ -55,4 +55,28 @@ command_set.insert(std::make_pair(k, v));
 std::cout << "Load command etc ... done" << std::endl;
 in.close();
 ;
+record += ">/dev/null 2>&1"; //不显示输出结果或者消息
+std::cout << "...请讲话...";
+fflush(stdout);
+if(Exec(record, false)){
+sr.ASR(err_code, message);
+if(err_code == 0){
+return true;
+}
+std::cout << "语音识别失败..." << std::endl;
+}
+else{
+std::cout << "录制失败..." << std::endl;
+}
+return false;
+}
+//使用百度语音合成接口，文本转语音，在使用cvlc进行本地播放
+bool TTSAndPlay(std::string message)
+{
+//cvlc命令行式的播放
+std::string play = "cvlc --play-and-exit ";//播放完毕退出：--play-and-exit
+play += PLAY_FILE;
+play += " >/dev/null 2>&1";
+sr.TTS(message); //语音识别
+Exec(play, false); //执行播放
 #endif
