@@ -1,8 +1,11 @@
+#include <iostream>
+#include "VoiceInter.hpp"
 
-#include "Jarvis.hpp"
-using namespace std;
-int main()
-{
-Jarvis js;
-js.Run();
+int main(){
+  
+  VoiceInter v1;
+  //v1.LoadEtc(ETC);
+  v1.Run();
+
+  return 0;
 }
