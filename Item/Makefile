@@ -16,4 +16,3 @@ VoiceInter:VoiceInter.cc
 
 clean:
 	rm -f VoiceInter
-
