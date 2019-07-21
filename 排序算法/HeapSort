@@ -1,0 +1,51 @@
+#include <iostream>
+#include <vector>
+#include "SortTestHelper.h"
+
+using namespace std;
+
+void HeapAdjust(int* arr, int s, int n){
+	int tmp = arr[s];
+	for (int i = 2*s+1; i < n; i += 2){
+		if (i < n-1 && arr[i] < arr[i + 1])
+			i++;
+		if (tmp >= arr[i])
+			break;
+		arr[s] = arr[i];
+		s = i;
+	}
+	arr[s] = tmp;
+}
+
+
+void HeapSort(int *arr, int n){
+	int nf = n / 2-1; // 非叶子结点下标
+	for (int i = nf; i >= 0; i--){
+		HeapAdjust(arr, i, n);
+	}
+
+	for (int i = n; i > 1; i--){
+
+		swap(arr[0], arr[i - 1]);
+
+		HeapAdjust(arr, 0, i - 1);
+	}
+}
+
+/*
+	建堆向上调整
+	更新堆顶向下调整
+*/
+
+int main()
+{
+	int n = 10;
+	int *arr = SortTestHelper::generateRandomArray2(n);
+	
+	HeapSort(arr, n);
+	SortTestHelper::printArray(arr, n);
+
+
+	delete[] arr;
+	return 0;
+}
