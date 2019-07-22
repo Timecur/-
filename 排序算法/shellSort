@@ -1,0 +1,40 @@
+#include <iostream>
+#include <algorithm>
+#include "SortTestHelper.h"
+
+using namespace std;
+
+void shellSort(int *arr, int n){
+	int i, j;
+	int incrm = n;
+	int v;
+	do{
+		incrm = incrm / 3 + 1;
+		for (i = incrm; i < n; i++){
+			if (arr[i] < arr[i - incrm]){
+				// 交换此增量下逆序元素
+				v = arr[i];
+				for (j = i - incrm; j >= 0 && v<arr[j]; j -= incrm)
+					arr[j + incrm] = arr[j]; // 记录后移位置
+				arr[j + incrm] = v;  // 插入
+				
+				//for (j = i - incrm; j >= 0 && arr[j+incrm]<arr[j]; j -= incrm)
+				//	swap(arr[j+incrm], arr[j]);
+				
+			}
+		}
+
+	} while (incrm > 1);
+
+}
+
+int main(){
+
+	int n = 20;
+	int *arr = SortTestHelper::generateRandomArray2(n);
+	shellSort(arr, n);
+	SortTestHelper::printArray(arr, n);
+
+	delete[] arr;
+	return 0;
+}
