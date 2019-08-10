@@ -1,0 +1,36 @@
+/* 计算器Demo*/
+#include <iostream>
+
+using namespace std;
+
+double Calcium(double numA, double numB, char op){
+	double result = 0;
+
+	switch (op){
+	case'+':
+		result =  numA + numB;
+		break;
+	case'-':
+		result = numA - numB;
+		break;
+	case'*':
+		result = numA*numB;
+		break;
+	case'/':
+		if (numB == 0){
+			cout << "不能除以 0 !!!" << endl;
+			return 0;
+		}
+		result = numA / numB;
+		break;
+	default: break;
+	}
+
+	return result;
+}
+
+int main(){
+	cout << Calcium(111, 222, 'e') << endl;
+
+	return 0;
+}
