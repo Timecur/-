@@ -1,0 +1,69 @@
+#include <iostream>
+#include <mutex>
+
+using namespace std;
+
+/*饿汉模式*/
+class Singleton{
+public:
+	static Singleton& GetSingleton() // 不能传值，只能传指针或者引用
+	{
+		cout << "Creat Singleton Object;" << endl;
+		return pSing;
+	}
+
+private:
+	Singleton(){}
+	Singleton(const Singleton& pS) = delete;
+	static Singleton pSing;
+};
+
+Singleton Singleton::pSing;
+
+
+/*懒汉模式*/
+class Singleton{
+public:
+	static volatile Singleton* GetSingleton() 
+	{
+		if (pSing == nullptr){
+			m.lock();
+			if (pSing == nullptr)
+				pSing = new Singleton();
+
+			cout << "Creat Singleton Object;" << endl;
+
+			m.unlock();
+		}
+		return pSing;
+	}
+
+	static void DestorySingleton(){
+		if (pSing != nullptr){
+			m.lock();
+			if (pSing != nullptr){
+				delete pSing;
+				pSing = nullptr;
+				cout << "Destory Success;" << endl;
+			}
+			m.unlock();
+		}
+	}
+
+private:
+	Singleton(){}
+	Singleton(const Singleton& pS) = delete;
+	static volatile Singleton* pSing;
+	static mutex m;
+};
+
+volatile Singleton* Singleton::pSing = nullptr;
+mutex Singleton::m;
+
+int main()
+{
+	Singleton::GetSingleton();
+	Singleton::DestorySingleton();
+
+	return 0;
+}
