@@ -1,0 +1,119 @@
+
+/* 简单工厂模式 */
+
+#include <iostream>
+#include <unordered_map>
+
+using namespace std;
+
+unordered_map<string, int>mm { { "+", 1 }, { "-", 2 }, { "*", 3}, { "/", 4 } };
+
+class Operation{
+public:
+	void SetNumberA(double numA){
+		_numA = numA;
+	}
+
+	void SetNumberB(double numB){
+		_numB = numB;
+	}
+
+	double GetNumberA(){
+		return _numA;
+	}
+
+	double GetNumberB(){
+		return _numB;
+	}
+
+	virtual double GetResult(){
+		double result = 0;
+		return result;
+	}
+
+private:
+	double _numA;
+	double _numB;
+};
+
+class Add :public Operation{
+public:
+	double GetResult(){
+		double result = 0;
+		result = GetNumberA() + GetNumberB();
+		return result;
+	}
+};
+
+class Sub :public Operation{
+public:
+	double GetResult(){
+		double result = 0;
+		result = GetNumberA() - GetNumberB();
+		return result;
+	}
+};
+
+class Mul :public Operation{
+public:
+	double GetResult(){
+		double result = 0;
+		result = GetNumberA() * GetNumberB();
+		return result;
+	}
+};
+
+class Div :public Operation{
+public:
+	double GetResult(){
+		double result = 0;
+		if (GetNumberB() == 0)
+			throw "不能除以 0 !!!";
+		result = GetNumberA() / GetNumberB();
+		return result;
+	}
+};
+
+class OperationFactory{
+public:
+	static Operation* CreateOperate(string operate){
+		Operation* op = nullptr;
+		int i = mm[operate];
+		switch (i)
+		{
+		case 1:
+			op = new Add();
+			break;
+		case 2:
+			op = new Sub();
+			break;
+		case 3:
+			op = new Mul();
+			break;
+		case 4:
+			op = new Div();
+			break;
+		default:
+			break;
+		}
+
+		return op;
+	}
+
+};
+
+int main()
+{
+	Operation* oper;
+	oper = OperationFactory::CreateOperate("/");
+	oper->SetNumberA(12);
+	oper->SetNumberB(0);
+	try{
+		cout << oper->GetResult() << endl;
+	}
+	catch (const char* msg){
+		cout << msg << endl;
+	}
+
+	return 0;
+}
