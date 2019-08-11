@@ -1,0 +1,120 @@
+/* 工厂方法模式 */
+#include <iostream>
+
+using namespace std;
+
+class Operation{
+public:
+	void SetNumberA(double numA){
+		_numA = numA;
+	}
+
+	void SetNumberB(double numB){
+		_numB = numB;
+	}
+
+	double GetNumberA(){
+		return _numA;
+	}
+
+	double GetNumberB(){
+		return _numB;
+	}
+
+	virtual double GetResult(){
+		double result = 0;
+		return result;
+	}
+
+private:
+	double _numA;
+	double _numB;
+};
+
+class Add :public Operation{
+public:
+	double GetResult(){
+		double result = 0;
+		result = GetNumberA() + GetNumberB();
+		return result;
+	}
+};
+
+class Sub :public Operation{
+public:
+	double GetResult(){
+		double result = 0;
+		result = GetNumberA() - GetNumberB();
+		return result;
+	}
+};
+
+class Mul :public Operation{
+public:
+	double GetResult(){
+		double result = 0;
+		result = GetNumberA() * GetNumberB();
+		return result;
+	}
+};
+
+class Div :public Operation{
+public:
+	double GetResult(){
+		double result = 0;
+		if (GetNumberB() == 0)
+			throw "不能除以 0 !!!";
+		result = GetNumberA() / GetNumberB();
+		return result;
+	}
+};
+
+class IFactory{
+public:
+	virtual Operation* CreateFactory() = 0;
+};
+
+class AddFactory :public IFactory{
+public:
+	Operation* CreateFactory(){
+		return new Add();
+	}
+};
+
+class SubFactory :public IFactory{
+public:
+	Operation* CreateFactory(){
+		return new Sub();
+	}
+};
+
+class MulFactory :public IFactory{
+public:
+	Operation* CreateFactory(){
+		return new Mul();
+	}
+};
+
+class DivFactory :public IFactory{
+public:
+	Operation* CreateFactory(){
+		return new Div();
+	}
+};
+
+
+int main()
+{
+	IFactory* operFactory = new AddFactory();
+	Operation* oper = operFactory->CreateFactory();
+	oper->SetNumberA(1);
+	oper->SetNumberB(2);
+	try{
+		cout << oper->GetResult() << endl;
+	}
+	catch (const char* msg){
+		cout << msg << endl;
+	}
+
+	return 0;
+}
