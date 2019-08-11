@@ -1,0 +1,178 @@
+/* 抽象工厂模式 */
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Operation{
+public:
+	void SetNumberA(double numA){
+		_numA = numA;
+	}
+
+	void SetNumberB(double numB){
+		_numB = numB;
+	}
+
+	double GetNumberA(){
+		return _numA;
+	}
+
+	double GetNumberB(){
+		return _numB;
+	}
+
+	virtual double GetResult(){
+		double result = 0;
+		return result;
+	}
+
+private:
+	double _numA;
+	double _numB;
+};
+
+class Add :public Operation{
+public:
+	double GetResult(){
+		double result = 0;
+		result = GetNumberA() + GetNumberB();
+		return result;
+	}
+};
+
+class Sub :public Operation{
+public:
+	double GetResult(){
+		double result = 0;
+		result = GetNumberA() - GetNumberB();
+		return result;
+	}
+};
+
+class Mul :public Operation{
+public:
+	double GetResult(){
+		double result = 0;
+		result = GetNumberA() * GetNumberB();
+		return result;
+	}
+};
+
+class Div :public Operation{
+public:
+	double GetResult(){
+		double result = 0;
+		if (GetNumberB() == 0)
+			throw "不能除以 0 !!!";
+		result = GetNumberA() / GetNumberB();
+		return result;
+	}
+};
+
+class Print{
+public:
+	virtual void PrintStatement() = 0;
+};
+
+class AddPrint: public Print{
+public:
+	void PrintStatement(){
+		cout << "这是加法 !!!" << endl;
+	}
+};
+
+
+class SubPrint : public Print{
+public:
+	void PrintStatement(){
+		cout << "这是减法 !!!" << endl;
+	}
+};
+
+
+class MulPrint : public Print{
+public:
+	void PrintStatement(){
+		cout << "这是乘法 !!!" << endl;
+	}
+};
+
+
+class DivPrint : public Print{
+public:
+	void PrintStatement(){
+		cout << "这是除法 !!!" << endl;
+	}
+};
+
+
+class IFactory{
+public:
+	virtual Operation* CreateFactory() = 0;
+	virtual Print* CreatePrintFactory() = 0;
+};
+
+class AddFactory :public IFactory{
+public:
+	Operation* CreateFactory(){
+		return new Add();
+	}
+
+	Print* CreatePrintFactory(){
+		return new AddPrint();
+	}
+};
+
+class SubFactory :public IFactory{
+public:
+	Operation* CreateFactory(){
+		return new Sub();
+	}
+
+	Print* CreatePrintFactory(){
+		return new SubPrint();
+	}
+};
+
+class MulFactory :public IFactory{
+public:
+	Operation* CreateFactory(){
+		return new Mul();
+	}
+
+	Print* CreatePrintFactory(){
+		return new MulPrint();
+	}
+};
+
+class DivFactory :public IFactory{
+public:
+	Operation* CreateFactory(){
+		return new Div();
+	}
+
+	Print* CreatePrintFactory(){
+		return new DivPrint();
+	}
+};
+
+
+int main()
+{
+	IFactory* operFactory = new AddFactory();
+	Operation* oper = operFactory->CreateFactory();
+	oper->SetNumberA(1);
+	oper->SetNumberB(2);
+	try{
+		cout << oper->GetResult() << endl;
+	}
+	catch (const char* msg){
+		cout << msg << endl;
+	}
+
+	
+	Print* prt = operFactory->CreatePrintFactory();
+	prt->PrintStatement();
+	return 0;
+}
