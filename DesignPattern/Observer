@@ -1,0 +1,105 @@
+#include <iostream>
+#include <string>
+#include <list>
+
+using namespace std;
+
+class Observer;
+
+/* 通知者接口 */
+class Subject{
+public:
+	// 添加观察者
+	virtual void Attach(Observer* obs) {}	
+	// 移除观察者
+	virtual void Detach(Observer* obs) {}
+	// 通知观察者
+	virtual void Notify() {}
+	// 设置通知者状态接口
+	void SetState(string s){
+		action = s;
+	}
+	// 获取通知者状态接口
+	string GetState(){ 
+		return action; 
+	}
+
+private:
+	string action;
+
+};
+
+class Sentry : public Subject{
+public:
+
+	void Attach(Observer* obs){
+		obs_list.push_back(obs);
+	}
+
+	void Detach(Observer* obs){
+		obs_list.remove(obs);
+	}
+
+	void Nofity();
+
+private:
+	list<Observer*> obs_list;
+};
+
+/* 观察者接口 */
+class Observer{
+public:
+	Observer(string name, Subject* sub)
+		:_name(name)
+		, _sub(sub)
+	{}
+
+	// 观察者更新状态
+	virtual void Update(){}
+
+
+public:
+	string _name;
+	Subject* _sub;
+
+};
+
+class MobilePhone :public Observer{
+public:
+	MobilePhone(string name, Subject* sub)
+		:Observer(name, sub)
+	{}
+
+	void Update(){
+		cout << _sub->GetState() << _name << "收起手机，开始学习!!!" << endl;
+	}
+};
+
+
+void Sentry::Nofity(){
+	list<Observer*>::iterator it;
+	for (it = obs_list.begin(); it != obs_list.end(); it++)
+		(*it)->Update();
+}
+
+
+int main()
+{
+	// 哨兵张三
+	Sentry* zhangsan = new Sentry();
+
+	// 玩手机的同学
+	MobilePhone* mp1 = new MobilePhone("李四", zhangsan);
+	MobilePhone* mp2 = new MobilePhone("王五", zhangsan);
+	MobilePhone* mp3 = new MobilePhone("赵六", zhangsan);
+
+	zhangsan->Attach(mp1);
+	zhangsan->Attach(mp2);
+	zhangsan->Attach(mp3);
+
+	zhangsan->SetState("张三：老师来了!!!   ");
+
+	zhangsan->Nofity();
+
+	return 0;
+}
