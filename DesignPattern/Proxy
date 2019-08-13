@@ -1,0 +1,62 @@
+#include <iostream>
+
+using namespace std;
+
+/* 购物 */
+class Purchase{
+public:
+	virtual void BuyShoes(){}
+	virtual void BuyCloth() {}
+	virtual void GarageKits(){}
+};
+
+/* 买家 */
+class Buyer : public Purchase{
+public:
+	void BuyShoes(){
+		cout << "买双鞋子 ^-^ " << endl;
+	}
+	void BuyCloth(){
+		cout << "买件衣服 ^-^ " << endl;
+	}
+	void GarageKits(){
+		cout << "买个手办 ^-^ " << endl;
+	}
+};
+
+/* 代购 */
+class Proxy : public Purchase{
+public:
+	Proxy(){
+		if (b == nullptr)
+			b = new Buyer();
+	}
+	
+	void BuyShoes(){
+		b->BuyShoes();
+	}
+
+	void BuyCloth(){
+		b->BuyCloth();
+	}
+
+	void GarageKits(){
+		b->GarageKits();
+	}
+
+private:
+	Buyer* b;
+};
+
+
+
+int main()
+{
+	Proxy* pro = new Proxy();
+
+	pro->BuyShoes();
+	pro->BuyCloth();
+	pro->GarageKits();
+
+	return 0;
+}
