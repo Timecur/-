@@ -1,0 +1,42 @@
+
+链接：https://www.nowcoder.com/discuss/224641?type=post&order=time&pos=&page=1
+
+
+public void first() {
+        Scanner scanner = new Scanner(System.in);
+        int N = scanner.nextInt();
+        int M = scanner.nextInt();
+        int[][] nums = new int[N + 2][M + 2];
+        int result = 0;
+        for (int i = 1; i <= N; i++) {
+            for (int j = 1; j <= M; j++) {
+                nums[i][j] = scanner.nextInt();
+            }
+        }
+        for (int i = 1; i <= N; i++) {
+            for (int j = 1; j <= M; j++) {
+                if (nums[i][j] < 1) {
+                    continue;
+                }
+                int cacheNum = nums[i][j];
+                result += 2;
+                int up = cacheNum - nums[i - 1][j];
+                int down = cacheNum - nums[i + 1][j];
+                int left = cacheNum - nums[i][j - 1];
+                int right = cacheNum - nums[i][j + 1];
+                if (up > 0) {
+                    result += up;
+                }
+                if (down > 0) {
+                    result += down;
+                }
+                if (left > 0) {
+                    result += left;
+                }
+                if (right > 0) {
+                    result += right;
+                }
+            }
+        }
+        System.out.println(result);
+    }
