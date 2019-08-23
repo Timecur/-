@@ -1,0 +1,42 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+struct sc_t{
+	int sc;
+	int t;
+};
+
+bool CMP(sc_t s1, sc_t s2){
+	return s1.sc > s2.sc;
+}
+
+int main()
+{
+	int n, sc, t, st;
+	while (cin >> n){
+		vector<sc_t> v(n + 5);
+
+		for (int i = 0; i < n; i++)
+			cin >> v[i].sc;
+		for (int i = 0; i < n; i++)
+			cin >> v[i].t;
+		cin >> st;
+
+		sort(v.begin(), v.end(), CMP);
+
+		int val = 0;
+		for (int i = 0; i < n; i++){
+			if (st >= v[i].t){
+				val += v[i].sc;
+				st -= v[i].t;
+			}
+		}
+
+		cout << val << endl;
+	}
+
+	return 0;
+}
