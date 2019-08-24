@@ -1,0 +1,87 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int calcResult(vector<long long> &v, int l, int m, int r){
+	vector<long long> tmp;
+	for (int i = l; i <= m; i++){
+		tmp.push_back(v[i]);
+	}
+	int count = 0;
+	int i = l;
+	int	j = m+1;
+	int k = 0;
+	while(i < tmp.size() && j <= r){
+		if (tmp[i] > v[j]){
+			++count;
+			v[k] = v[j];
+			j++;
+		}
+		else{
+			i++;
+		}
+	}
+
+	while (i < tmp.size()){
+		v[k++] = v[i++];
+		++count;
+	}
+	while (j <= r){
+		v[k++] = v[j++];
+	}
+	return count;
+}
+
+void func(vector<long long> &v, int l, int r, int &count){
+	if (l == r) return;
+	int m = (l+r)/2;
+	func(v, l, m, count);
+	func(v, m+1, r, count);
+	count += calcResult(v, l, m, r);
+}
+
+int main()
+{
+	int n;
+	while (cin >> n){
+		vector<long long> v(n, 0);
+
+		for (int i = 0; i < n; i++){
+			cin >> v[i];
+		}
+		int count = 0;
+		func(v, 0, n - 1, count);
+		cout << count << endl;
+	}
+	return 0;
+}
+
+/*
+作者：Nuullll
+链接：https://www.nowcoder.com/discuss/232706?type=0&order=0&pos=9&page=1
+来源：牛客网
+
+from collections import defaultdict
+ 
+def divideGroups(heights):
+    sorted_h = sorted(heights)
+ 
+    count = 0
+    m = defaultdict(lambda:0)
+ 
+    for h, t in zip(heights, sorted_h):
+        m[h] += 1
+        m[t] -= 1
+ 
+        if m[h] == 0:
+            del m[h]
+        if m[t] == 0:
+            del m[t]
+ 
+        if len(m) == 0:
+            count += 1
+ 
+    return count
+
+*/
