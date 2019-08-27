@@ -1,0 +1,54 @@
+class Solution {
+public:
+    class UnionFindSet{
+    public:
+        UnionFindSet(int size)
+            :_ufs(size, -1){}
+        
+        int FindRoot(int index){
+            while(_ufs[index] >= 0){
+                index = _ufs[index];
+            }
+            return index;
+        }
+        
+        bool Union(int x, int y){
+            int r1 = FindRoot(x);
+            int r2 = FindRoot(y);
+            
+            if(r1 == r2)
+                return false;
+            
+            _ufs[r1] += _ufs[r2];
+            _ufs[r2] = r1;
+            return true;
+        }
+        
+        int Count() const{
+            int count = 0;
+            for(int i = 0 ; i < _ufs.size(); i++)
+                if(_ufs[i] < 0)
+                    ++count;
+            
+            return count;
+        }
+        
+        
+    private:
+        vector<int> _ufs;
+    };
+    
+    
+    
+    int findCircleNum(vector<vector<int>>& M) {
+        UnionFindSet s(M.size());
+        
+        for(int i = 0; i < M.size(); ++i){
+            for(int j = 0; j < M[0].size(); ++j){
+                if(M[i][j] == 1)
+                    s.Union(i, j);
+            }
+        }
+        return s.Count();  
+    }
+};
