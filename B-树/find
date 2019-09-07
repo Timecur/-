@@ -1,0 +1,30 @@
+// 参数：key为待查找的元素
+// 返回值：PNode代表找到的节点，int为该元素在该节点中的位置
+pair<PNode, int> Find(const K& key)
+{
+   // 从根节点的位置开始查找
+   PNode pCur = _pRoot;
+   PNode pParent = NULL;
+   size_t i = 0;
+   // 节点存在
+   while(pCur)
+   {
+     i = 0;
+     // 在该节点的值域中查找
+     while(i < pCur->_size)
+     {
+       // 找到返回
+       if(key == pCur->_keys[i])
+       return pair<PNode, int>(pCur, i);
+       else if(key < pCur->_keys[i]) // 该元素可能在i的左边的孩子节点中
+       break;
+       else
+      i++; // 继续向右查找
+     }
+     // 在pCur中没有找到，到pCur节点的第i个孩子中查找
+     pParent = pCur;
+     pCur = pCur->_pSub[i];
+   }
+   // 没有找到
+   return pair<PNode, int>(pParent, -1);
+}
