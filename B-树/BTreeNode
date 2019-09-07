@@ -1,0 +1,17 @@
+// M叉树：即一个节点最多有M个孩子，M-1个数据域
+// 为实现简单期间，数据域与孩子与多增加一个(原因参见上文对插入过程的分析)
+template<class K, int M = 3>
+struct BTreeNode
+{
+   K _keys[M]; // 存放元素
+   BTreeNode<K, M>* _pSub[M+1]; // 存放孩子节点，注意：孩子比数据多一个
+   BTreeNode<K, M>* _pParent; // 在分裂节点后可能需要继续向上插入，为实现简单增加parent域
+   size_t _size; // 节点中有效元素的个数
+   BTreeNode()
+   : _pParent(NULL)
+   , _size(0)
+   {
+     for(size_t i = 0; i <= M; ++i)
+     _pSub[i] = NULL;
+   }
+};
