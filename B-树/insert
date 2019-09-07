@@ -1,0 +1,93 @@
+void _InsertKey(PNode pCur, const K& key, PNode pSub)
+{
+   // 按照插入排序思想插入key
+   int end = pCur->_size-1;
+   while(end >= 0)
+   {
+     if(key < pCur->_keys[end])
+     {
+       // 将该位置元素以及其右侧孩子往右搬移一个位置
+       pCur->_keys[end+1] = pCur->_keys[end];
+       pCur->_pSub[end+2] = pCur->_pSub[end+1];
+       end--;
+     }
+     else
+      break;
+   }
+   // 插入key以及新分裂出的节点
+   pCur->_keys[end+1] = key;
+ pCur->_pSub[end+2] = pSub;
+
+   // 更新节点的双亲
+   if(pSub)
+   pSub->_pParent = pCur;
+
+   pCur->_size++;
+}
+
+bool Insert(const K& key)
+{
+   // 如果树为空，直接插入
+   if(NULL == _pRoot)
+   {
+     _pRoot = new Node();
+     _pRoot->_keys[0] = key;
+     _pRoot->_size = 1;
+     return true;
+   }
+   // 找插入位置，如果该元素已经存在，则不插入
+   pair<PNode, int> ret = Find(key);
+   if(-1 != ret.second)
+   return false;
+
+   K k = key;
+   PNode temp = NULL;
+   PNode pCur = ret.first;
+   while(true)
+   {
+     // 将key插入到pCur所指向的节点中
+     _InsertKey(pCur, k, temp);
+     // 检测该节点是否满足B-树的性质，如果满足则插入成功返回，否则，对pCur节点进行分裂
+     if(pCur->_size < M)
+       return true;
+     // 申请新节点
+     temp = new Node;
+     // 找到pCur节点的中间位置
+     // 将中间位置右侧的元素以及孩子搬移到新节点中
+     int mid = (M >> 1);
+     for(size_t i = mid+1; i < pCur->_size; ++i)
+      {
+       temp->_keys[temp->_size] = pCur->_keys[i];
+       temp->_pSub[temp->_size++] = pCur->_pSub[i];
+
+       // 跟新孩子节点的双亲
+       if(pCur->_pSub[i])
+       pCur->_pSub[i]->_pParent = temp;
+      }
+     // 注意：孩子比关键字多搬移一个
+     temp->_pSub[temp->_size] = pCur->_pSub[pCur->_size];
+     if(pCur->_pSub[pCur->_size])
+       pCur->_pSub[pCur->_size]->_pParent = temp;
+     // 更新pCur节点的剩余数据个数
+     pCur->_size -= (temp->_size+1);
+     // 如果分裂的节点为根节点，重新申请一个新的根节点，将中间位置数据以及分裂出的新节点插入到新的根节点中，插入结束
+     if(pCur == _pRoot)
+     {
+       _pRoot = new Node;
+       _pRoot->_keys[0] = pCur->_keys[mid];
+       _pRoot->_pSub[0] = pCur;
+       _pRoot->_pSub[1] = temp;
+       _pRoot->_size = 1;
+       pCur->_pParent = temp->_pParent = _pRoot;
+       return true;
+     }
+     else
+     {
+       // 如果分裂的节点不是根节点，将中间位置数据以及新分裂出的节点继续向pCur的双亲中进行插入
+       k = pCur->_keys[mid];
+       pCur = pCur->_pParent;
+     }
+   }
+   return true;
+}
+
